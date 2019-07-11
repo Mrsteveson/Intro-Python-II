@@ -18,6 +18,7 @@ class Player:
             print('\nThere is no room in that direction')
 
     def take(self, item):
+        # print('take firing!?')
         if item in self.room.items:
             self.items.append(item)
             self.room.items.remove(item)
@@ -32,3 +33,6 @@ class Player:
             item.on_drop()
         else:
             print(f'\n {item} is not in your inventory')
+
+    def show_items(self):
+        print(f"\n{self.name}'s stuff:\n" + ", " .join([item.name for item in self.items]))
