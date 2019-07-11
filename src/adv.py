@@ -7,7 +7,7 @@ from item import Item
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons", [Item("Torch", "still usable")]),
+                     "North of you, the cave mount beckons", [Item("torch", "still usable")]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east.""", []),
@@ -29,8 +29,6 @@ you find a small hidden passageway. Where might it lead?""", [Item("Gold Key", "
 }
 
     
-
-
 # Link rooms together
 
 room['outside'].n_to = room['foyer']
@@ -49,7 +47,6 @@ room['secret'].w_to = room['treasure']
 #
 
 # Make a new player object that is currently in the 'outside' room.
-player = Player('Sir Patty', room['outside'], [Item("Sword", "Basic iron sword")])
 
 # Write a loop that:
 #
@@ -61,41 +58,92 @@ player = Player('Sir Patty', room['outside'], [Item("Sword", "Basic iron sword")
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+#------------------------------------------------------------------------------
 
-print(f'\nWelcome to the Dungeon.')
+#Create player, currently outside, has a sword.
+player = Player('Sir Patty', room['outside'], [Item("sword", "basic iron sword")])
 
+#Welcome Message
+print('--------------------------------------------------------------')
+print(f'\nWelcome to the Dungeon.\n')
+print('--------------------------------------------------------------')
+
+#Prints player.name & player.room(current)
+#If there are items will print out msg saying items found, in player.room
+#If there are none, says no items.
 def location(player):
-    print(f'\n{player.name}, is in the {player.room}')
+    print(f'\n\n{player.name}, is in the {player.room}')
 
     if player.room.items:
         print(f'\nFound these items in the {player.room.name}')
         for item in player.room.items:
-            if item is not None:
-                print(f'A {item.name}, {item.description}')
+            print(f'A {item.name}, {item.description}')
     else:
         print(f'\nNo items found in this area')
 
-playermove = None
+#Four moveable directions
+directions = ['n', 'e', 's', 'w']
 
-while playermove != 'q':
+#Control Loop
+while True:
+    ##Prints player.name & player.room(current) & items info
     location(player)
 
-    print('\nChoose a direction')
-    playermove = input('[n]orth, [e]ast, [s]outh, [w]est, [q]uit: ')
+    print('\nChoose a direction: [n]orth, [e]ast, [s]outh, [w]est, or [q] to quit the game.')
+    user_cmd = input("--> ")
+    print('\n--------------------------------------------------------------------------------')
+    new_cmd = user_cmd.split(' ')
 
-    if playermove == 'n' or playermove == 'e' or playermove == 's' or playermove == 'w':
-        if playermove == 'n' and player.room.n_to:
-            player.room = player.room.n_to
-        elif playermove == 'e' and player.room.e_to:
-            player.room = player.room.e_to
-        elif playermove == 's' and player.room.s_to:
-            player.room = player.room.s_to
-        elif playermove == 'w' and player.room.w_to:
-            player.room = player.room.w_to
+    if len(new_cmd) == 1:
+        if user_cmd[0] in directions:
+            player.move(user_cmd)
+        elif user_cmd == 'q':
+            print(f'\nThank you for playing, {player.name}! Exiting Game.')
+            break
         else:
-            print('\nNo room located in that direction, please choose again.')
-    elif playermove == 'q':
-        print(f'\nThank you for playing, {player.name}! Exiting Game.')
-        break
-    else:
-        print('\nInvalid input, please choose again.')
+            print('\nInvalid input, please choose again.')
+
+    elif len(new_cmd) == 2:
+        if new_cmd[0] == 'get' or new_cmd[0] == 'take':
+            for item in player.room.items:
+                if item.name == new_cmd[1]:
+                    player.take(item)
+                    # item.on_take()
+                else:
+                    print('\nItem does not exist in this room.\n')
+
+        elif new_cmd[0] == 'drop' or new_cmd[0] == 'remove':
+            for item in player.items:
+                if item.name == new_cmd[1]:
+                    player.drop(item)
+                    # item.on_drop()
+                else:
+                    print('\nItem is not in your inventory.')
+
+
+
+#-------------------------------------------First Attempt--------------------------------------------------------------
+# playermove = None
+
+# while playermove != 'q':
+#     location(player)
+
+#     print('\nChoose a direction')
+#     playermove = input('[n]orth, [e]ast, [s]outh, [w]est, [q]uit: ')
+
+#     if playermove == 'n' or playermove == 'e' or playermove == 's' or playermove == 'w':
+#         if playermove == 'n' and player.room.n_to:
+#             player.room = player.room.n_to
+#         elif playermove == 'e' and player.room.e_to:
+#             player.room = player.room.e_to
+#         elif playermove == 's' and player.room.s_to:
+#             player.room = player.room.s_to
+#         elif playermove == 'w' and player.room.w_to:
+#             player.room = player.room.w_to
+#         else:
+#             print('\nNo room located in that direction, please choose again.')
+#     elif playermove == 'q':
+#         print(f'\nThank you for playing, {player.name}! Exiting Game.')
+#         break
+#     else:
+#         print('\nInvalid input, please choose again.')
