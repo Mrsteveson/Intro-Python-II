@@ -8,7 +8,7 @@ class Item:
         self.description = description
 
     def on_pickup(self):
-        print(f"\nSuccessfully added, {self.name} to your inventory.")
+        print(f"\nSuccessfully added, {self.name}, to your inventory.")
 
     def on_drop(self):
         print(f"\nSuccessfully dropped, {self.name}, on the room floor.")
